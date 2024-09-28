@@ -1,13 +1,13 @@
 import { ErrorRequestHandler } from "express";
-import config from "../config";
-import AppError from "../errors/AppError";
+import { TErrorSources } from "../interface/error";
+import handleValidationError from "../errors/handleValidationError";
 import handleCastError from "../errors/handleCastError";
 import handleDuplicateError from "../errors/handleDuplicateError";
-import handleValidationError from "../errors/handleValidationError";
-import { TErrorSources } from "../interface/error";
+import AppError from "../errors/AppError";
+import config from "../config";
 
-const globalErrorHandler: ErrorRequestHandler = (err, req, res) => {
-  console.log(err.statusCode);
+const globalErrorHandler: ErrorRequestHandler = async (err, req, res, next) => {
+  //setting default values
   let statusCode = 500;
   let message = "Something went wrong!";
   let errorSources: TErrorSources = [
