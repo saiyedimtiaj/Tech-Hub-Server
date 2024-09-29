@@ -121,8 +121,26 @@ const refreshToken = async (token: string) => {
   };
 };
 
+const updateUser = async (user: Partial<IUser>, id: string) => {
+  const { name, profile, bio } = user;
+  const result = await User.findByIdAndUpdate(
+    id,
+    {
+      name,
+      profile,
+      bio,
+    },
+    {
+      runValidators: true,
+      new: true,
+    }
+  );
+  return result;
+};
+
 export const authService = {
   createUser,
   logIn,
   refreshToken,
+  updateUser,
 };

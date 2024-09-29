@@ -6,6 +6,7 @@ export interface IUser extends Document {
   password: string;
   profile?: string;
   role: string;
+  bio?: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -13,3 +14,8 @@ export type TLogIn = {
   email: string;
   password: string;
 };
+
+export const USER_ROLE = {
+  ADMIN: "admin",
+  USER: "user",
+} as const;
