@@ -8,6 +8,7 @@ export const createToken = (
     email: string;
     role: string;
     profile: string | undefined;
+    bio: string;
   },
   secret: string,
   expiresIn: string

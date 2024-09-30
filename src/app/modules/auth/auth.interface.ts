@@ -16,6 +16,6 @@ export type TLogIn = {
 };
 
 export const USER_ROLE = {
-  ADMIN: "admin",
-  USER: "user",
+  admin: "admin",
+  user: "user",
 } as const;

@@ -57,6 +57,7 @@ const refreshToken = catchAsync(async (req, res) => {
 });
 
 const updateUser = catchAsync(async (req, res) => {
+  console.log({ body: req.body, id: req.params });
   const result = await authService.updateUser(req.body, req.params.id);
 
   sendResponse(res, {

@@ -22,6 +22,7 @@ const createUser = async (user: IUser) => {
     role: newUser.role,
     profile: newUser?.profile,
     _id: newUser?._id as string,
+    bio: newUser?.bio as string,
   };
 
   const accessToken = createToken(
@@ -66,6 +67,7 @@ const logIn = async (user: TLogIn) => {
     role: isUserExist.role,
     profile: isUserExist?.profile,
     _id: isUserExist?._id as string,
+    bio: isUserExist?.bio as string,
   };
 
   const accessToken = createToken(
@@ -108,6 +110,7 @@ const refreshToken = async (token: string) => {
     role: user.role,
     profile: user?.profile,
     _id: user?._id as string,
+    bio: user?.bio as string,
   };
 
   const accessToken = createToken(
@@ -123,7 +126,7 @@ const refreshToken = async (token: string) => {
 
 const updateUser = async (user: Partial<IUser>, id: string) => {
   const { name, profile, bio } = user;
-  const result = await User.findByIdAndUpdate(
+  const newUser = await User.findByIdAndUpdate(
     id,
     {
       name,
@@ -135,7 +138,11 @@ const updateUser = async (user: Partial<IUser>, id: string) => {
       new: true,
     }
   );
-  return result;
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  return newUser;
 };
 
 export const authService = {

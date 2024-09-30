@@ -10,7 +10,7 @@ route.post("/login", authController.logInuser);
 route.post("/refresh-token", authController.refreshToken);
 route.put(
   "/update-user/:id",
-  auth(USER_ROLE.ADMIN, USER_ROLE.USER),
+  auth(USER_ROLE.admin, USER_ROLE.user),
   authController.updateUser
 );
 
