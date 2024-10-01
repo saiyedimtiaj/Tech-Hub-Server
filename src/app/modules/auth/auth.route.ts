@@ -28,4 +28,6 @@ route.patch(
 
 route.get("/know-users", authController.displayFollowingRequest);
 
+route.get("/user-info/:id", authController.getUserInfo);
+
 export const authRoute = route;

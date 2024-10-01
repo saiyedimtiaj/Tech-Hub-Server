@@ -17,7 +17,9 @@ route.get(
   auth(USER_ROLE.user, USER_ROLE.admin),
   postController.getMyAllPost
 );
+route.get("/user-posts/:id", postController.getUserAllPost);
 
 route.get("/all-posts", postController.getAllPost);
+route.get("/get-post/:id", postController.getSinglePost);
 
 export const postRoute = route;

@@ -121,6 +121,18 @@ const displayFollowingRequest = catchAsync(async (req, res) => {
   });
 });
 
+const getUserInfo = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await authService.getUserProfile(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Update user info successfully!",
+    data: result,
+  });
+});
+
 export const authController = {
   createUser,
   logInuser,
@@ -129,4 +141,5 @@ export const authController = {
   getUserProfile,
   followRequest,
   displayFollowingRequest,
+  getUserInfo,
 };

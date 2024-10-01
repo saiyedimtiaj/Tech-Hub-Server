@@ -46,8 +46,9 @@ const getMyAllPost = catchAsync(async (req, res) => {
     data: result,
   });
 });
-const getAllPost = catchAsync(async (req, res) => {
-  const result = await postServices.getAllPosts();
+
+const getUserAllPost = catchAsync(async (req, res) => {
+  const result = await postServices.getMyPosts(req?.params?.id);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -57,8 +58,32 @@ const getAllPost = catchAsync(async (req, res) => {
   });
 });
 
+const getAllPost = catchAsync(async (req, res) => {
+  const { limit } = req.query;
+  const result = await postServices.getAllPosts(limit as string);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Post retrive successful!",
+    data: result,
+  });
+});
+
+const getSinglePost = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await postServices.getSinglePost(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Get single Post retrive successful!",
+    data: result,
+  });
+});
+
 export const postController = {
   createPost,
   getMyAllPost,
   getAllPost,
+  getSinglePost,
+  getUserAllPost,
 };

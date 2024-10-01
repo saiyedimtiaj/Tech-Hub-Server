@@ -7,6 +7,7 @@ import { createToken } from "../../utils/verifyJwt";
 import config from "../../config";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { startSession, Types } from "mongoose";
+import Post from "../post/post.model";
 
 const createUser = async (user: IUser) => {
   const isUserExist = await User.findOne({ email: user?.email });
@@ -147,8 +148,10 @@ const updateUser = async (user: Partial<IUser>, id: string) => {
 };
 
 const getUserProfile = async (id: string) => {
-  const result = await User.findById(id);
-  return result;
+  const result = await User.findById(id).exec();
+  const postCount = (await Post.find({ userId: new Types.ObjectId(id) }))
+    .length;
+  return { ...result?.toObject(), postCount };
 };
 
 const followRequest = async (userId: string, body: { followId: string }) => {
@@ -203,29 +206,23 @@ const displayFollowingRequestService = async (userId?: string) => {
   let result;
 
   if (!userId) {
-    result = await User.find({}, { _id: 0 })
-      .sort({ createdAt: -1 })
-      .limit(5)
-      .lean();
+    result = await User.find({}).sort({ createdAt: -1 }).limit(5).lean();
   } else {
-    const user = await User.findById(userId, { _id: 0 }).lean();
+    const user = await User.findById(userId).lean();
     if (!user) {
       throw new AppError(httpStatus.NOT_FOUND, "User not found!");
     }
 
     const followingUserIds = user.following.map((f) => f.userId);
 
-    result = await User.find(
-      {
-        _id: {
-          $nin: [
-            ...followingUserIds.map((id) => new Types.ObjectId(id)),
-            new Types.ObjectId(userId),
-          ],
-        },
+    result = await User.find({
+      _id: {
+        $nin: [
+          ...followingUserIds.map((id) => new Types.ObjectId(id)),
+          new Types.ObjectId(userId),
+        ],
       },
-      { _id: 0 }
-    )
+    })
       .sort({ createdAt: -1 })
       .limit(5)
       .lean();
