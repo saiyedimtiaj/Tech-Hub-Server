@@ -13,8 +13,13 @@ const getMyPosts = async (id: string) => {
   );
   return result;
 };
+const getAllPosts = async () => {
+  const result = await Post.find().populate("userId");
+  return result;
+};
 
 export const postServices = {
   createPost,
   getMyPosts,
+  getAllPosts,
 };

@@ -14,4 +14,18 @@ route.put(
   authController.updateUser
 );
 
+route.get(
+  "/user-profile",
+  auth(USER_ROLE.admin, USER_ROLE.user),
+  authController.getUserProfile
+);
+
+route.patch(
+  "/follow",
+  auth(USER_ROLE.admin, USER_ROLE.user),
+  authController.followRequest
+);
+
+route.get("/know-users", authController.displayFollowingRequest);
+
 export const authRoute = route;

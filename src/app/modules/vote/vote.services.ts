@@ -34,6 +34,12 @@ const addOrRemoveVote = async (userId: string, postId: string) => {
   }
 };
 
+export const getAllVote = async (postId: string) => {
+  const result = await Vote.findOne({ postId: new Types.ObjectId(postId) });
+  return result;
+};
+
 export const voteServices = {
   addOrRemoveVote,
+  getAllVote,
 };

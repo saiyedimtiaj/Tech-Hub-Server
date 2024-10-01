@@ -34,11 +34,24 @@ const userSchema: Schema<IUser> = new Schema(
       type: String,
       default: "",
     },
+    followers: [
+      {
+        userId: { type: Schema.Types.ObjectId, ref: "User" },
+      },
+    ],
+    following: [
+      {
+        userId: { type: Schema.Types.ObjectId, ref: "User" },
+      },
+    ],
   },
   {
     timestamps: true,
   }
 );
+
+userSchema.path("followers").default([]);
+userSchema.path("following").default([]);
 
 userSchema.pre("save", async function (next) {
   const user = this as IUser;

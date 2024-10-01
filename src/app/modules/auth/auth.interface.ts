@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 
 export interface IUser extends Document {
   name: string;
@@ -7,6 +7,8 @@ export interface IUser extends Document {
   profile?: string;
   role: string;
   bio?: string;
+  followers: { userId: Types.ObjectId }[];
+  following: { userId: Types.ObjectId }[];
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 

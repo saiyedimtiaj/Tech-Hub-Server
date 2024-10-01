@@ -11,9 +11,15 @@ const createPost = catchAsync(async (req, res) => {
     throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorize!");
   }
   const decoded = (await jwtDecode(req.headers.authorization)) as JwtPayload;
-  const postData = { ...req.body, userId: decoded._id };
 
-  console.log(postData);
+  const { data } = req.body;
+  const parsedData = JSON.parse(data); // Parse the incoming post data
+  const imageFiles = req.files as Express.Multer.File[]; // Images from multer
+
+  // Prepare the image URLs from Cloudinary
+  const images = imageFiles.map((file) => file.path);
+
+  const postData = { ...parsedData, images, userId: decoded?._id };
 
   const result = await postServices.createPost(postData);
 
@@ -31,9 +37,17 @@ const getMyAllPost = catchAsync(async (req, res) => {
   }
   const decoded = (await jwtDecode(req.headers.authorization)) as JwtPayload;
 
-  console.log(decoded);
-
   const result = await postServices.getMyPosts(decoded?._id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Post retrive successful!",
+    data: result,
+  });
+});
+const getAllPost = catchAsync(async (req, res) => {
+  const result = await postServices.getAllPosts();
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -46,4 +60,5 @@ const getMyAllPost = catchAsync(async (req, res) => {
 export const postController = {
   createPost,
   getMyAllPost,
+  getAllPost,
 };

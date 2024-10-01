@@ -12,18 +12,28 @@ const createComment = catchAsync(async (req, res) => {
   }
   const decoded = (await jwtDecode(req.headers.authorization)) as JwtPayload;
 
-  console.log(decoded);
-
   const result = await commentServices.createComment(decoded?._id, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Post Comment successful!",
+    message: "Create Comment successful!",
+    data: result,
+  });
+});
+
+const getComments = catchAsync(async (req, res) => {
+  const result = await commentServices.getAllComment(req.params.id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Comment retrive successful!",
     data: result,
   });
 });
 
 export const commentController = {
   createComment,
+  getComments,
 };

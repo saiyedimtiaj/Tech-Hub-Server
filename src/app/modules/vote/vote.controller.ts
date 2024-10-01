@@ -25,6 +25,17 @@ const addOrRemoveVotes = catchAsync(async (req, res) => {
   });
 });
 
+const getAllVotes = catchAsync(async (req, res) => {
+  const result = await voteServices.getAllVote(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "get all vote successful!",
+    data: result,
+  });
+});
+
 export const voteController = {
   addOrRemoveVotes,
+  getAllVotes,
 };
