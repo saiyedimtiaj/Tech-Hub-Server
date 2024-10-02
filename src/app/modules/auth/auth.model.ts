@@ -44,6 +44,16 @@ const userSchema: Schema<IUser> = new Schema(
         userId: { type: Schema.Types.ObjectId, ref: "User" },
       },
     ],
+    membership: {
+      type: Boolean,
+      default: false,
+    },
+    membershipEnd: {
+      type: Date,
+      required: function () {
+        return this.membership;
+      },
+    },
   },
   {
     timestamps: true,

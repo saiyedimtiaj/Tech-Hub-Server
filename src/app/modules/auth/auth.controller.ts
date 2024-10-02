@@ -6,6 +6,8 @@ import config from "../../config";
 import AppError from "../../errors/AppError";
 import { jwtDecode } from "jwt-decode";
 import { JwtPayload } from "jsonwebtoken";
+import UAParser from "ua-parser-js";
+import requestIp from "request-ip";
 
 const createUser = catchAsync(async (req, res) => {
   const result = await authService.createUser(req.body);
@@ -29,6 +31,22 @@ const createUser = catchAsync(async (req, res) => {
 });
 
 const logInuser = catchAsync(async (req, res) => {
+  const parser = new UAParser();
+  const uaResult = parser
+    .setUA(req?.headers["user-agent"] as string)
+    .getResult();
+  const ipAddress = requestIp.getClientIp(req);
+
+  const deviceInfo = {
+    ipAddress: ipAddress,
+    device: uaResult.device.model || "Unknown device", // e.g., 'iPhone', 'Windows PC'
+    os: uaResult.os.name || "Unknown OS", // e.g., 'iOS', 'Windows'
+    browser: uaResult.browser.name || "Unknown browser", // e.g., 'Chrome', 'Safari'
+    lastLogin: new Date(),
+  };
+
+  console.log(deviceInfo);
+
   const result = await authService.logIn(req.body);
   const { refreshToken, accessToken } = result;
 

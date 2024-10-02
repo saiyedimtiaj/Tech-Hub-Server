@@ -9,6 +9,8 @@ export interface IUser extends Document {
   bio?: string;
   followers: { userId: Types.ObjectId }[];
   following: { userId: Types.ObjectId }[];
+  membership: boolean; // Corrected spelling
+  membershipEnd?: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
