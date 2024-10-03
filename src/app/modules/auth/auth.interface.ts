@@ -11,6 +11,7 @@ export interface IUser extends Document {
   following: { userId: Types.ObjectId }[];
   membership: boolean; // Corrected spelling
   membershipEnd?: Date;
+  status: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 

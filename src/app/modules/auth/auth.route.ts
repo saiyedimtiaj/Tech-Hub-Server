@@ -7,6 +7,7 @@ const route = Router();
 
 route.post("/create-user", authController.createUser);
 route.post("/login", authController.logInuser);
+route.post("/change-password", authController.ChangePassword);
 route.post("/refresh-token", authController.refreshToken);
 route.put(
   "/update-user/:id",
@@ -29,5 +30,11 @@ route.patch(
 route.get("/know-users", authController.displayFollowingRequest);
 
 route.get("/user-info/:id", authController.getUserInfo);
+route.get("/users", auth(USER_ROLE.admin), authController.getAllUsers);
+route.put(
+  "/status-change/:id",
+  auth(USER_ROLE.admin),
+  authController.changeUserStatus
+);
 
 export const authRoute = route;

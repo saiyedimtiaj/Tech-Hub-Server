@@ -31,22 +31,6 @@ const createUser = catchAsync(async (req, res) => {
 });
 
 const logInuser = catchAsync(async (req, res) => {
-  const parser = new UAParser();
-  const uaResult = parser
-    .setUA(req?.headers["user-agent"] as string)
-    .getResult();
-  const ipAddress = requestIp.getClientIp(req);
-
-  const deviceInfo = {
-    ipAddress: ipAddress,
-    device: uaResult.device.model || "Unknown device", // e.g., 'iPhone', 'Windows PC'
-    os: uaResult.os.name || "Unknown OS", // e.g., 'iOS', 'Windows'
-    browser: uaResult.browser.name || "Unknown browser", // e.g., 'Chrome', 'Safari'
-    lastLogin: new Date(),
-  };
-
-  console.log(deviceInfo);
-
   const result = await authService.logIn(req.body);
   const { refreshToken, accessToken } = result;
 
@@ -62,6 +46,16 @@ const logInuser = catchAsync(async (req, res) => {
     },
     success: true,
     message: "User logged in sucessful!",
+  });
+});
+
+const ChangePassword = catchAsync(async (req, res) => {
+  const result = await authService.changePassword(req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    data: result,
+    success: true,
+    message: "Password change sucessful!",
   });
 });
 
@@ -151,6 +145,29 @@ const getUserInfo = catchAsync(async (req, res) => {
   });
 });
 
+const getAllUsers = catchAsync(async (req, res) => {
+  const result = await authService.getAllUsers();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "users retrive successfully!",
+    data: result,
+  });
+});
+
+const changeUserStatus = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await authService.changedUserStatus(id, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "users status successfully!",
+    data: result,
+  });
+});
+
 export const authController = {
   createUser,
   logInuser,
@@ -160,4 +177,7 @@ export const authController = {
   followRequest,
   displayFollowingRequest,
   getUserInfo,
+  getAllUsers,
+  changeUserStatus,
+  ChangePassword,
 };

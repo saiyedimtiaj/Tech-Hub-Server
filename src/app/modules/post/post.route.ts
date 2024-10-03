@@ -19,7 +19,19 @@ route.get(
 );
 route.get("/user-posts/:id", postController.getUserAllPost);
 
-route.get("/all-posts", postController.getAllPost);
+route.get(
+  "/all-posts",
+  auth(USER_ROLE.admin, USER_ROLE.user),
+  postController.getAllPost
+);
+route.get("/most-liked", postController.getMostLikedPost);
 route.get("/get-post/:id", postController.getSinglePost);
+route.delete(
+  "/delete/:id",
+  auth(USER_ROLE.admin, USER_ROLE.user),
+  postController.deletePost
+);
+
+route.get("/search", postController.searchPost);
 
 export const postRoute = route;

@@ -231,6 +231,37 @@ const displayFollowingRequestService = async (userId?: string) => {
   return result;
 };
 
+const getAllUsers = async () => {
+  return await User.find();
+};
+const changedUserStatus = async (id: string, payload: { status: string }) => {
+  return await User.findByIdAndUpdate(
+    id,
+    { status: payload.status },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+};
+
+const changePassword = async (payload: TLogIn) => {
+  const user = await User.findOne({ email: payload.email }).select("+password");
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not Exist!");
+  }
+  const hashedPassword = await bcrypt.hash(payload.password, 10);
+  const result = await User.findByIdAndUpdate(
+    user._id,
+    { password: hashedPassword },
+    {
+      new: true,
+      runValidators: true,
+    }
+  ).select("-password");
+  return result;
+};
+
 export const authService = {
   createUser,
   logIn,
@@ -239,4 +270,7 @@ export const authService = {
   getUserProfile,
   followRequest,
   displayFollowingRequestService,
+  getAllUsers,
+  changedUserStatus,
+  changePassword,
 };
