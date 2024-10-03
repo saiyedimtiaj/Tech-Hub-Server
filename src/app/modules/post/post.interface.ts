@@ -7,4 +7,5 @@ export interface IPost extends Document {
   images: string[];
   category: string;
   type: string;
+  likeCount: number;
 }

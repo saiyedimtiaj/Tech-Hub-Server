@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import { SortOrder, Types } from "mongoose";
 import { IPost } from "./post.interface";
 import Post from "./post.model";
 import Vote from "../vote/vote.model";
@@ -17,7 +17,14 @@ const getMyPosts = async (id: string) => {
   return result;
 };
 
-const getAllPosts = async (limit?: string, userId?: string) => {
+const getAllPosts = async (
+  limit?: string,
+  userId?: string,
+  sort?: "asc" | "desc" | undefined
+) => {
+  const sortOption: { [key: string]: SortOrder } = sort
+    ? { likeCount: sort }
+    : {};
   const user = await User.findById(userId);
   if (!user) {
     throw new Error("User not found");
@@ -30,15 +37,18 @@ const getAllPosts = async (limit?: string, userId?: string) => {
   if (isMembershipExpired) {
     result = await Post.find({ type: "basic" })
       .populate("userId")
-      .limit(limit ? Number(limit) : 0);
+      .limit(limit ? Number(limit) : 0)
+      .sort(sortOption);
   } else if (user.role === "admin") {
     result = await Post.find()
       .populate("userId")
-      .limit(limit ? Number(limit) : 0);
+      .limit(limit ? Number(limit) : 0)
+      .sort(sortOption);
   } else {
     result = await Post.find()
       .populate("userId")
-      .limit(limit ? Number(limit) : 0);
+      .limit(limit ? Number(limit) : 0)
+      .sort(sortOption);
   }
   return result;
 };

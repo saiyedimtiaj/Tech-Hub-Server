@@ -6,6 +6,7 @@ import AppError from "../../errors/AppError";
 import { jwtDecode } from "jwt-decode";
 import { JwtPayload } from "jsonwebtoken";
 import { paymentServices } from "./payment.services";
+import { TOrder } from "./payment.interface";
 const stripe = require("stripe")(config.stripe_secret);
 
 const paymentIntent = catchAsync(async (req, res) => {
@@ -37,7 +38,7 @@ const createNewOrder = catchAsync(async (req, res) => {
     userId: decoded?._id,
   };
 
-  const result = await paymentServices.createPayment(payload);
+  const result = await paymentServices.createPayment(payload as TOrder);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

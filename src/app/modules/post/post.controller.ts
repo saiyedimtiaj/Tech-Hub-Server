@@ -59,13 +59,17 @@ const getUserAllPost = catchAsync(async (req, res) => {
 });
 
 const getAllPost = catchAsync(async (req, res) => {
-  const { limit } = req.query;
+  const { limit, sort } = req.query;
   if (!req?.headers?.authorization) {
     throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorize!");
   }
   const decoded = (await jwtDecode(req.headers.authorization)) as JwtPayload;
 
-  const result = await postServices.getAllPosts(limit as string, decoded._id);
+  const result = await postServices.getAllPosts(
+    limit as string,
+    decoded._id,
+    sort as "asc" | "desc" | undefined
+  );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
