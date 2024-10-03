@@ -232,8 +232,9 @@ const displayFollowingRequestService = async (userId?: string) => {
 };
 
 const getAllUsers = async () => {
-  return await User.find();
+  return await User.find().sort({ createdAt: -1 });
 };
+
 const changedUserStatus = async (id: string, payload: { status: string }) => {
   return await User.findByIdAndUpdate(
     id,
