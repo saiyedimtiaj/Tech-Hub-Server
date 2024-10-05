@@ -32,6 +32,12 @@ route.delete(
   postController.deletePost
 );
 
+route.get(
+  "/admin/all-posts",
+  auth(USER_ROLE.admin),
+  postController.getAdminAllPost
+);
+
 route.get("/search", postController.searchPost);
 
 export const postRoute = route;

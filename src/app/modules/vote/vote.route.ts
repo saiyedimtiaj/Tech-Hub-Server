@@ -5,7 +5,11 @@ import { USER_ROLE } from "../auth/auth.interface";
 
 const route = Router();
 
-route.post("/vote", auth(USER_ROLE.user), voteController.addOrRemoveVotes);
+route.post(
+  "/vote",
+  auth(USER_ROLE.user, USER_ROLE.admin),
+  voteController.addOrRemoveVotes
+);
 route.get("/all-votes/:id", voteController.getAllVotes);
 
 export const voteRoute = route;

@@ -5,6 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import AppError from "../../errors/AppError";
 import { JwtPayload } from "jsonwebtoken";
 import { postServices } from "./post.services";
+import Post from "./post.model";
 
 const createPost = catchAsync(async (req, res) => {
   if (!req?.headers?.authorization) {
@@ -64,9 +65,8 @@ const getAllPost = catchAsync(async (req, res) => {
     throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorize!");
   }
   const decoded = (await jwtDecode(req.headers.authorization)) as JwtPayload;
-
   const result = await postServices.getAllPosts(
-    limit as string,
+    limit as string | undefined,
     decoded._id,
     sort as "asc" | "desc" | undefined
   );
@@ -121,6 +121,15 @@ const searchPost = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getAdminAllPost = catchAsync(async (req, res) => {
+  const result = await Post.find().populate("userId");
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "All post retrive successful!",
+    data: result,
+  });
+});
 
 export const postController = {
   createPost,
@@ -131,4 +140,5 @@ export const postController = {
   getMostLikedPost,
   deletePost,
   searchPost,
+  getAdminAllPost,
 };

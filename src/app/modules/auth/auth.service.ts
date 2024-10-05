@@ -16,7 +16,11 @@ const createUser = async (user: IUser) => {
     throw new AppError(httpStatus.BAD_REQUEST, "User already exist!");
   }
 
-  const newUser = await User.create(user);
+  const newUser = await User.create({
+    ...user,
+    isLoggedIn: true,
+    lastLogin: new Date().toISOString(),
+  });
 
   const jwtPayload = {
     name: newUser.name,
@@ -82,6 +86,15 @@ const logIn = async (user: TLogIn) => {
     jwtPayload,
     config.jwt_refresh_secret as string,
     config.jwt_refresh_expires_in as string
+  );
+
+  await User.findByIdAndUpdate(
+    isUserExist?._id,
+    { isLoggedIn: true, lastLogin: new Date().toISOString() },
+    {
+      new: true,
+      runValidators: true,
+    }
   );
 
   return {

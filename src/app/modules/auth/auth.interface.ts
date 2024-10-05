@@ -12,6 +12,8 @@ export interface IUser extends Document {
   membership: boolean; // Corrected spelling
   membershipEnd?: Date;
   status: string;
+  lastLogin: Date;
+  isLoggedIn: boolean;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 

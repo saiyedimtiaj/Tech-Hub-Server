@@ -6,6 +6,7 @@ const voteSchema = new Schema<TVote>({
   votes: [
     {
       userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+      createdAt: { type: Date, default: Date.now },
     },
   ],
 });

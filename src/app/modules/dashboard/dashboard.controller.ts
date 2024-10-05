@@ -5,6 +5,10 @@ import User from "../auth/auth.model";
 import Post from "../post/post.model";
 import Order from "../payment/payment.model";
 import { generateLast12MonthData } from "../../utils/generateLast6MonthData";
+import { jwtDecode } from "jwt-decode";
+import AppError from "../../errors/AppError";
+import { JwtPayload } from "jsonwebtoken";
+import { dashboardService } from "./dashboard.services";
 
 const getDashboardAnylisis = catchAsync(async (req, res) => {
   const user = await User.estimatedDocumentCount();
@@ -36,9 +40,51 @@ const getOrderAnylisit = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getUserDailyAnalytice = catchAsync(async (req, res) => {
+  if (!req?.headers?.authorization) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorize!");
+  }
+  const decoded = (await jwtDecode(req.headers.authorization)) as JwtPayload;
+  const post = await dashboardService.dailyPostAnalytics(decoded._id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Get Daily analytics data retrive successful!",
+    data: post,
+  });
+});
+const getUserWeeklyAnalytice = catchAsync(async (req, res) => {
+  if (!req?.headers?.authorization) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorize!");
+  }
+  const decoded = (await jwtDecode(req.headers.authorization)) as JwtPayload;
+  const post = await dashboardService.weeklyPostAnalytics(decoded._id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Get Weekly analytics data retrive successful!",
+    data: post,
+  });
+});
+const getUserMonthlyAnalytice = catchAsync(async (req, res) => {
+  if (!req?.headers?.authorization) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorize!");
+  }
+  const decoded = (await jwtDecode(req.headers.authorization)) as JwtPayload;
+  const post = await dashboardService.monthlyPostAnalytics(decoded._id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Get Weekly analytics data retrive successful!",
+    data: post,
+  });
+});
 
 export const dashboardController = {
   getDashboardAnylisis,
   getPostAnylisit,
   getOrderAnylisit,
+  getUserDailyAnalytice,
+  getUserWeeklyAnalytice,
+  getUserMonthlyAnalytice,
 };

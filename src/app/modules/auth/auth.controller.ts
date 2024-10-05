@@ -8,6 +8,7 @@ import { jwtDecode } from "jwt-decode";
 import { JwtPayload } from "jsonwebtoken";
 import UAParser from "ua-parser-js";
 import requestIp from "request-ip";
+import User from "./auth.model";
 
 const createUser = catchAsync(async (req, res) => {
   const result = await authService.createUser(req.body);
@@ -155,6 +156,28 @@ const getAllUsers = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const LogOut = catchAsync(async (req, res) => {
+  if (!req?.headers?.authorization) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorize!");
+  }
+  const decoded = (await jwtDecode(req.headers.authorization)) as JwtPayload;
+
+  const result = await User.findByIdAndUpdate(
+    decoded?._id,
+    { isLoggedIn: false },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "users log out successfully!",
+    data: result,
+  });
+});
 
 const changeUserStatus = catchAsync(async (req, res) => {
   const { id } = req.params;
@@ -180,4 +203,5 @@ export const authController = {
   getAllUsers,
   changeUserStatus,
   ChangePassword,
+  LogOut,
 };

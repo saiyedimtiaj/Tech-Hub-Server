@@ -58,6 +58,12 @@ const userSchema: Schema<IUser> = new Schema(
         return this.membership;
       },
     },
+    isLoggedIn: {
+      type: Boolean,
+    },
+    lastLogin: {
+      type: Date,
+    },
   },
   {
     timestamps: true,

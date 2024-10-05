@@ -31,25 +31,19 @@ const getAllPosts = async (
   }
   let result;
 
-  const isMembershipExpired =
-    user.membershipEnd && new Date() > new Date(user.membershipEnd);
+  // const isMembershipExpired = new Date() > new Date(user.membershipEnd);
 
-  if (isMembershipExpired) {
-    result = await Post.find({ type: "basic" })
-      .populate("userId")
-      .limit(limit ? Number(limit) : 0)
-      .sort(sortOption);
-  } else if (user.role === "admin") {
-    result = await Post.find()
-      .populate("userId")
-      .limit(limit ? Number(limit) : 0)
-      .sort(sortOption);
-  } else {
-    result = await Post.find()
+  if (user?.membershipEnd && new Date() > new Date(user.membershipEnd)) {
+    result = await Post.find({ type: "besic" })
       .populate("userId")
       .limit(limit ? Number(limit) : 0)
       .sort(sortOption);
   }
+
+  result = await Post.find()
+    .populate("userId")
+    .limit(limit ? Number(limit) : 0)
+    .sort(sortOption);
   return result;
 };
 
@@ -59,78 +53,10 @@ const getSinglePost = async (id: string) => {
 };
 
 const getMostLikedPosts = async () => {
-  const mostLikedPosts = await Vote.aggregate([
-    {
-      $project: {
-        postId: 1,
-        likeCount: { $size: "$votes" }, // Count the number of votes
-      },
-    },
-    {
-      $group: {
-        _id: "$postId", // Group by postId
-        totalLikes: { $sum: "$likeCount" }, // Sum likes for each post
-      },
-    },
-    {
-      $sort: { totalLikes: -1 }, // Sort by total likes in descending order
-    },
-    {
-      $limit: 6, // Limit to top 6 posts
-    },
-    {
-      $lookup: {
-        from: "posts", // Lookup from the posts collection
-        localField: "_id", // The grouped postId
-        foreignField: "_id", // The post ID in the posts collection
-        as: "postDetails", // Name of the field to store the post details
-      },
-    },
-    {
-      $unwind: {
-        path: "$postDetails", // Unwind the post details array
-        preserveNullAndEmptyArrays: true, // Keep posts even if no details found
-      },
-    },
-    {
-      $lookup: {
-        from: "users", // Lookup from the users collection
-        localField: "postDetails.userId", // The userId field in post details
-        foreignField: "_id", // The ID field in the users collection
-        as: "userDetails", // Name of the field to store user details
-      },
-    },
-    {
-      $unwind: {
-        path: "$userDetails", // Unwind the user details array
-        preserveNullAndEmptyArrays: true, // Keep posts even if no user found
-      },
-    },
-    {
-      $project: {
-        _id: 1,
-        totalLikes: 1,
-        postDetails: {
-          _id: "$postDetails._id",
-          content: "$postDetails.content",
-          userId: "$postDetails.userId",
-          images: "$postDetails.images",
-          category: "$postDetails.category",
-          createdAt: "$postDetails.createdAt",
-        },
-        userDetails: {
-          _id: "$userDetails._id",
-          name: "$userDetails.name",
-          email: "$userDetails.email",
-          profile: "$userDetails.profile",
-          role: "$userDetails.role",
-          bio: "$userDetails.bio",
-        },
-      },
-    },
-  ]);
-
-  return mostLikedPosts;
+  const result = await Post.find()
+    .sort({ likeCount: "desc" })
+    .populate("userId");
+  return result;
 };
 
 const deletePost = async (id: string) => {

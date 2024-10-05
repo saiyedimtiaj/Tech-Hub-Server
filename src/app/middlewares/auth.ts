@@ -30,7 +30,7 @@ const auth = (...requiredRoles: (keyof typeof USER_ROLE)[]) => {
       throw new AppError(httpStatus.NOT_FOUND, "This user is not found !");
     }
 
-    if (user.status === "block") {
+    if (user.status !== "unblock") {
       throw new AppError(httpStatus.UNAUTHORIZED, "You are blocked now!");
     }
 

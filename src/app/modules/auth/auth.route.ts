@@ -37,4 +37,10 @@ route.put(
   authController.changeUserStatus
 );
 
+route.post(
+  "/logout",
+  auth(USER_ROLE.admin, USER_ROLE.user),
+  authController.LogOut
+);
+
 export const authRoute = route;

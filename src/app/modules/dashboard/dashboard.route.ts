@@ -20,5 +20,20 @@ route.get(
   auth(USER_ROLE.admin),
   dashboardController.getPostAnylisit
 );
+route.get(
+  "/user/daily",
+  auth(USER_ROLE.admin, USER_ROLE.user),
+  dashboardController.getUserDailyAnalytice
+);
+route.get(
+  "/user/weekly",
+  auth(USER_ROLE.admin, USER_ROLE.user),
+  dashboardController.getUserWeeklyAnalytice
+);
+route.get(
+  "/user/monthly",
+  auth(USER_ROLE.admin, USER_ROLE.user),
+  dashboardController.getUserMonthlyAnalytice
+);
 
 export const dashboardRoute = route;
