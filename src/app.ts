@@ -8,7 +8,9 @@ import router from "./app/routes";
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
+app.use(
+  cors({ origin: ["https://tech-hub-ruddy.vercel.app"], credentials: true })
+);
 
 app.use("/api/v1", router);
 

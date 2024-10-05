@@ -56,7 +56,7 @@ export const getWeeklyVoteData = async (postId: string) => {
     });
   }
 
-  return weeklyVoteData.reverse();
+  return weeklyVoteData;
 };
 
 interface IDailyVoteData {
@@ -103,7 +103,7 @@ export const getDailyVoteData = async (postId: string) => {
     });
   }
 
-  return dailyVoteData.reverse(); // Returns the daily vote data directly
+  return dailyVoteData; // Returns the daily vote data directly
 };
 
 interface IMonthlyVoteData {
@@ -111,7 +111,9 @@ interface IMonthlyVoteData {
   count: number; // Number of votes in that month
 }
 
-export const getMonthlyVoteData = async (postId: string) => {
+export const getMonthlyVoteData = async (
+  postId: string
+): Promise<IMonthlyVoteData[]> => {
   const voteData: IPostVote | null = await Vote.findOne({
     postId: new Types.ObjectId(postId),
   });
@@ -123,7 +125,7 @@ export const getMonthlyVoteData = async (postId: string) => {
   const monthlyVoteData: IMonthlyVoteData[] = [];
   const today = new Date();
   const startDate = new Date(today);
-  startDate.setMonth(today.getMonth() - 6); // Set to 6 months ago
+  startDate.setMonth(today.getMonth() - 5); // Set to 5 months ago, to include current month
 
   // Group votes by month
   for (let i = 0; i < 6; i++) {
@@ -140,7 +142,6 @@ export const getMonthlyVoteData = async (postId: string) => {
 
     const options: Intl.DateTimeFormatOptions = {
       month: "long",
-      year: "numeric",
     };
     const monthString = currentMonth.toLocaleDateString("en-US", options);
 
@@ -150,5 +151,5 @@ export const getMonthlyVoteData = async (postId: string) => {
     });
   }
 
-  return monthlyVoteData.reverse();
+  return monthlyVoteData;
 };
